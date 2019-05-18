@@ -1,22 +1,24 @@
 #!/usr/bin/env node
-'use strict';
 
-require('make-promises-safe');
+import 'make-promises-safe';
 
-const os = require('os');
+import * as os from 'os';
 
-const async = require('async');
+import async from 'async';
+import rootCheck from 'root-check';
+import uidnumber from 'uid-number';
+import yargsLib from 'yargs';
 
-const checkTags = require('../lib/check-tags');
-const citgm = require('../lib/citgm');
-const commonArgs = require('../lib/common-args');
-const getLookup = require('../lib/lookup').get;
-const isMatch = require('../lib/match-conditions');
-const logger = require('../lib/out');
-const reporter = require('../lib/reporter');
-const update = require('../lib/update');
+import { checkTags } from '../lib/check-tags';
+import { windows, Tester } from '../lib/citgm';
+import { commonArgs } from '../lib/common-args';
+import { getLookupTable } from '../lib/lookup';
+import { isMatch } from '../lib/match-conditions';
+import { logger } from '../lib/out';
+import * as reporter from '../lib/reporter';
+import { update } from '../lib/update';
 
-const yargs = commonArgs(require('yargs'))
+const yargs = commonArgs(yargsLib)
   .usage('citgm-all [options]')
   .option('fail-flaky', {
     alias: 'f',
@@ -59,7 +61,7 @@ const log = logger({
 update(log);
 
 if (!app.su) {
-  require('root-check')(); // Silently downgrade if running as root... Unless --su is passed
+  rootCheck(); // Silently downgrade if running as root... Unless --su is passed
 } else {
   log.warn('root', 'Running as root! Use caution!');
 }
@@ -92,7 +94,7 @@ if (options.excludeTags.length) {
   );
 }
 
-const lookup = getLookup(options);
+const lookup = getLookupTable(options);
 if (!lookup) {
   log.error('the json file cannot be found or there is an error in the file!');
   process.exit(1);
@@ -107,8 +109,7 @@ if (app.parallel && app.parallel + 1 > process.getMaxListeners()) {
   process.setMaxListeners(app.parallel + 1);
 }
 
-if (!citgm.windows) {
-  const uidnumber = require('uid-number');
+if (!windows) {
   const uid = app.uid || process.getuid();
   const gid = app.gid || process.getgid();
   uidnumber(uid, gid, (err, uid, gid) => {
@@ -133,7 +134,7 @@ function runCitgm(mod, name, next) {
   }
 
   const start = new Date();
-  const runner = new citgm.Tester(name, options);
+  const runner = new Tester(name, options);
   let bailed = false;
 
   if (checkTags(options, mod, name, log)) {

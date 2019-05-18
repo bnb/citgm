@@ -1,17 +1,20 @@
 #!/usr/bin/env node
-'use strict';
 
-require('make-promises-safe');
+import 'make-promises-safe';
 
-const citgm = require('../lib/citgm');
-const commonArgs = require('../lib/common-args');
-const logger = require('../lib/out');
-const reporter = require('../lib/reporter');
-const update = require('../lib/update');
+import rootCheck from 'root-check';
+import uidnumber from 'uid-number';
+import yargsLib from 'yargs';
+
+import { windows, Tester } from '../lib/citgm';
+import { commonArgs } from '../lib/common-args';
+import { logger } from '../lib/out';
+import * as reporter from '../lib/reporter';
+import { update } from '../lib/update';
 
 let mod;
 
-const yargs = commonArgs(require('yargs'))
+const yargs = commonArgs(yargsLib)
   .usage('citgm [options] <module>')
   .option('sha', {
     alias: 'c',
@@ -31,7 +34,7 @@ const log = logger({
 update(log);
 
 if (!app.su) {
-  require('root-check')(); // Silently downgrade if running as root...
+  rootCheck(); // Silently downgrade if running as root...
   // Unless --su is passed
 } else {
   log.warn('root', 'Running as root! Use caution!');
@@ -55,8 +58,7 @@ const options = {
   yarn: app.yarn
 };
 
-if (!citgm.windows) {
-  const uidnumber = require('uid-number');
+if (!windows) {
   const uid = app.uid || process.getuid();
   const gid = app.gid || process.getgid();
   uidnumber(uid, gid, (err, uid, gid) => {
@@ -70,7 +72,7 @@ if (!citgm.windows) {
 
 const start = new Date();
 function launch(mod, options) {
-  const runner = new citgm.Tester(mod, options);
+  const runner = new Tester(mod, options);
 
   function cleanup() {
     runner.cleanup();

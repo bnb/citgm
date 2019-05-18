@@ -5,6 +5,7 @@
   "homepage": "http://nodejs.org",
   "main": "bin/citgm",
   "preferGlobal": true,
+  "type": "module",
   "bin": {
     "citgm": "./bin/citgm.js",
     "citgm-all": "./bin/citgm-all.js"
@@ -63,6 +64,7 @@
     "yarn": "^1.19.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
     "eslint-plugin-prettier": "^3.1.1",
