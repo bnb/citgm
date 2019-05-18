@@ -9,14 +9,14 @@ import rootCheck from 'root-check';
 import uidnumber from 'uid-number';
 import yargsLib from 'yargs';
 
-import { checkTags } from '../lib/check-tags';
-import { windows, Tester } from '../lib/citgm';
-import { commonArgs } from '../lib/common-args';
-import { getLookupTable } from '../lib/lookup';
-import { isMatch } from '../lib/match-conditions';
-import { logger } from '../lib/out';
-import * as reporter from '../lib/reporter';
-import { update } from '../lib/update';
+import { checkTags } from '../lib/check-tags.js';
+import { windows, Tester } from '../lib/citgm.js';
+import { commonArgs } from '../lib/common-args.js';
+import { getLookupTable } from '../lib/lookup.js';
+import { isMatch } from '../lib/match-conditions.js';
+import { logger } from '../lib/out.js';
+import * as reporter from '../lib/reporter/index.js';
+import { update } from '../lib/update.js';
 
 const yargs = commonArgs(yargsLib)
   .usage('citgm-all [options]')

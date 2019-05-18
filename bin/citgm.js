@@ -6,11 +6,11 @@ import rootCheck from 'root-check';
 import uidnumber from 'uid-number';
 import yargsLib from 'yargs';
 
-import { windows, Tester } from '../lib/citgm';
-import { commonArgs } from '../lib/common-args';
-import { logger } from '../lib/out';
-import * as reporter from '../lib/reporter';
-import { update } from '../lib/update';
+import { windows, Tester } from '../lib/citgm.js';
+import { commonArgs } from '../lib/common-args.js';
+import { logger } from '../lib/out.js';
+import * as reporter from '../lib/reporter/index.js';
+import { update } from '../lib/update.js';
 
 let mod;
 
