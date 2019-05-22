@@ -1,19 +1,24 @@
-'use strict';
 // FIXME not really a unit test
 // FIXME npm should be stubbed
 // TODO Test for local module... what does it even mean?
 
-const os = require('os');
-const path = require('path');
-const { promisify } = require('util');
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+import * as os from 'os';
+import { promisify } from 'util';
 
-const { stat } = require('fs-extra');
-const { test } = require('tap');
-const mkdirp = promisify(require('mkdirp'));
-const rimraf = promisify(require('rimraf'));
+import fse from 'fs-extra';
+import tap from 'tap';
+import mkdirpLib from 'mkdirp';
+import rimrafLib from 'rimraf';
 
-const grabProject = require('../lib/grab-project');
+import { grabProject } from '../lib/grab-project.js';
 
+const { test } = tap;
+const mkdirp = promisify(mkdirpLib);
+const rimraf = promisify(rimrafLib);
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sandbox = path.join(os.tmpdir(), `citgm-${Date.now()}`);
 const fixtures = path.join(__dirname, 'fixtures');
 
@@ -33,7 +38,7 @@ test('grab-project: npm module', async (t) => {
     options: {}
   };
   await grabProject(context);
-  const stats = await stat(context.unpack);
+  const stats = await fse.stat(context.unpack);
   t.ok(stats.isFile(), 'The tar ball should exist on the system');
 });
 
@@ -50,7 +55,7 @@ test('grab-project: local', async (t) => {
     options: {}
   };
   await grabProject(context);
-  const stats = await stat(context.unpack);
+  const stats = await fse.stat(context.unpack);
   t.ok(stats.isFile(), 'The tar ball should exist on the system');
 });
 
@@ -66,7 +71,7 @@ test('grab-project: lookup table', async (t) => {
     options: {}
   };
   await grabProject(context);
-  const stats = await stat(context.unpack);
+  const stats = await fse.stat(context.unpack);
   t.ok(stats.isFile(), 'The tar ball should exist on the system');
 });
 
@@ -83,7 +88,7 @@ test('grab-project: local', async (t) => {
   };
   process.chdir(fixtures);
   await grabProject(context);
-  const stats = await stat(context.unpack);
+  const stats = await fse.stat(context.unpack);
   t.ok(stats.isFile(), 'The tar ball should exist on the system');
   process.chdir(__dirname);
 });
@@ -120,7 +125,9 @@ test('grab-project: use git clone', async (t) => {
     options: {}
   };
   await grabProject(context);
-  const stats = await stat(path.join(context.path, 'omg-i-pass/package.json'));
+  const stats = await fse.stat(
+    path.join(context.path, 'omg-i-pass/package.json')
+  );
   t.ok(stats.isFile(), 'The project must be cloned locally');
 });
 
