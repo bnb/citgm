@@ -1,9 +1,13 @@
-'use strict';
+import { createRequire } from 'module';
 
-const test = require('tap').test;
-const spawn = require('../../lib/spawn');
+import tap from 'tap';
 
-const citgmAllPath = require.resolve('../../bin/citgm-all.js');
+import { spawn } from '../../lib/spawn';
+
+const require = createRequire(import.meta.url);
+const citgmAllPath = require.resolve('../../bin/citgm.js');
+
+const { test } = tap;
 
 const isWin32 = process.platform === 'win32';
 const nullDevice = isWin32 ? '\\\\.\\NUL' : '/dev/null';
